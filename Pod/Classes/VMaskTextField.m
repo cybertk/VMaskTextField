@@ -9,6 +9,7 @@ NSString * kVMaskTextFieldDefaultChar = @"#";
     self = [super initWithCoder:coder];
     if (self) {
         self.defaultCharMask = kVMaskTextFieldDefaultChar;
+        self.delegate = self;
     }
     return self;
 }
@@ -22,17 +23,11 @@ NSString * kVMaskTextFieldDefaultChar = @"#";
     return self;
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    return  [self shouldChangeCharactersInRange:range replacementString:string];
+}
+
 - (BOOL)shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
-    if (self.disallowEditingBetweenCharacters) {
-        NSInteger minimanAllowedLocation = self.text.length - 1;
-        NSInteger editionLocation = range.location;
-        if (editionLocation < minimanAllowedLocation) {
-            [self resignFirstResponder]; // Do a trick with first responded to move
-            [self becomeFirstResponder]; // cursor to the end of text field
-            return NO;
-        }
-    }
-    
     NSString * currentTextDigited = [self.text stringByReplacingCharactersInRange:range withString:string];
     if (string.length == 0) {
         unichar lastCharDeleted = 0;
